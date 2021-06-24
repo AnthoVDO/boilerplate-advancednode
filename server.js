@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.route('/').get((req, res) => {
-  res.render(process.cwd()+'/views/pug');
+  res.render(process.cwd()+'/views/pug', {title: "Hello", message:"Please login"});
 });
 
 
