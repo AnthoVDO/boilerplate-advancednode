@@ -12,6 +12,8 @@ fccTesting(app); //For FCC testing purposes
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+/* login */
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: true,
@@ -19,6 +21,8 @@ app.use(session({
   cookie: {secure:false}
 }))
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.route('/').get((req, res) => {
