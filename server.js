@@ -34,7 +34,8 @@ myDB(async client =>{
     //Change the response to render the Pug template
     res.render("pug", {
       title: "Connected to Database",
-      message:"Please login"
+      message:"Please login",
+      showLogin: true
     }) 
   })
 
@@ -58,6 +59,16 @@ myDB(async client =>{
       return done(null, user)
     })
   }))
+
+  app.post("/login", passport.authenticate('local', { failureRedirect: '/', failureFlash: true }), 
+  (req,res)=>{
+     res.redirect("/profile");
+  })
+
+  app.get("/profile", (req,res)=>{
+    res.render(process.cwd()+"/views/pug/profile");
+  })
+
 
 }).catch(e=>{
   app.route('/').get((req, res) => {
