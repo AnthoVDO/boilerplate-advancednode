@@ -65,6 +65,20 @@ myDB(async client =>{
      res.redirect("/profile");
   })
 
+  // creating a middleware function to check if the user is authenticated if he tap /login in url to avoid security issue.
+
+  const ensureAuthenticated = (req, res, next) => {
+    if(req.isAuthenticated()){
+      return next();
+    }else{
+      res.redirect("/")
+    }
+  }
+
+  app.get("/profile", ensureAuthenticated, (req,res)=>{
+    res.render(process.cwd()+"/views/pug/profile")
+  })
+
   app.get("/profile", (req,res)=>{
     res.render(process.cwd()+"/views/pug/profile");
   })
