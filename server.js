@@ -60,7 +60,7 @@ myDB(async client =>{
     })
   }))
 
-  app.post("/login", passport.authenticate('local', { failureRedirect: '/', failureFlash: true }), 
+  app.post("/login", passport.authenticate('local', { failureRedirect: '/'}), 
   (req,res)=>{
      res.redirect("/profile");
   })
