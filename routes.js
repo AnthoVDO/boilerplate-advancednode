@@ -9,7 +9,8 @@ module.exports = (app, myDataBase) =>{
       title: "Connected to Database",
       message:"Please login",
       showLogin: true,
-      showRegistration:true
+      showRegistration:true,
+      showSocialAuth: true
     }) 
   })
 
@@ -36,7 +37,17 @@ module.exports = (app, myDataBase) =>{
   }
   )
 
+  /*---------------------- Social auth ---------------------------------------*/
 
+  app.route("/auth/github").get(passport.authenticate("github"),(req, res)=>{
+
+  })
+
+  app.route("/auth/github/callback").get(passport.authenticate("github", {faillureRedirect: "/"}), (req, res)=>{
+    res.redirect("/profile")
+  })
+
+  /*---------------------- ----------- ---------------------------------------*/
   //login route
   app.post("/login", passport.authenticate('local', { failureRedirect: '/'}), 
   (req,res)=>{
