@@ -20,4 +20,5 @@ we can add Express-session to handle session (save cookie)
 - get logout  
 - get 404 status  
 - catch if db error  
-
+- register new user with this logic : post form => check if user exist already => authenticate the new user => redirect to profile  
+- to user redirect, you need to create an app.get(path, (req, res)=>{res.render(pathfile, {optional variable})})

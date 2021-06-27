@@ -35,7 +35,8 @@ myDB(async client =>{
     res.render("pug", {
       title: "Connected to Database",
       message:"Please login",
-      showLogin: true
+      showLogin: true,
+      showRegistration:true
     }) 
   })
 
@@ -52,7 +53,7 @@ myDB(async client =>{
 
   passport.use(new LocalStrategy((username, password, done)=>{
     myDataBase.findOne({username: username}, (err, user)=>{
-      console.log("User"+username+"attempted to log in");
+      console.log("User "+username+" attempted to log in");
       if(err){return done(err)};
       if(!user){return done(null, false);}
       if(password !== user.password){return done(null, false)}
@@ -60,9 +61,30 @@ myDB(async client =>{
     })
   }))
 
+  app.post('/register', (req, res, next)=>{
+    myDataBase.findOne({username: req.body.username}, (err, user)=>{
+      if(err){next(err);}
+      else if(user){
+        res.redirect('/');
+      } else {
+        myDataBase.insertOne({
+          username: req.body.username, password: req.body.password
+        }, (err, doc)=>{
+          if(err){res.redirect('/')}
+          else{
+            next(null, doc.ops[0]);
+          }
+        })
+      }
+    })
+  }, passport.authenticate("local", {faillureRedirect: '/'}), (req, res, next)=>{
+    res.redirect("/profile");
+  }
+  )
+
   app.post("/login", passport.authenticate('local', { failureRedirect: '/'}), 
   (req,res)=>{
-     res.redirect("/profile", {username: req.user.username});
+     res.redirect("/profile");
   })
 
   // creating a middleware function to check if the user is authenticated if he tap /login in url to avoid security issue.
@@ -76,7 +98,7 @@ myDB(async client =>{
   }
 
   app.get("/profile", ensureAuthenticated, (req,res)=>{
-    res.render(process.cwd()+"/views/pug/profile")
+    res.render(process.cwd()+"/views/pug/profile", {username: req.user.username})
   })
 
   app.get("/profile", (req,res)=>{
