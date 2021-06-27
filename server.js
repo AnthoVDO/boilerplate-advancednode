@@ -62,11 +62,11 @@ myDB(async client =>{
 
   app.post("/login", passport.authenticate('local', { failureRedirect: '/'}), 
   (req,res)=>{
-     res.redirect("/profile");
+     res.redirect("/profile", {username: req.user.username});
   })
 
   // creating a middleware function to check if the user is authenticated if he tap /login in url to avoid security issue.
-
+  
   const ensureAuthenticated = (req, res, next) => {
     if(req.isAuthenticated()){
       return next();
