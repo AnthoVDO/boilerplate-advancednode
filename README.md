@@ -10,4 +10,14 @@ Note: don't forget __dirname or process.cwd() for the file directory
 ## Authentication  
 We can use Passeport.js to make the authentication.  
 we can add Express-session to handle session (save cookie)  
+  
+- Surround with DB  
+- Serial user and deserial user  
+- Choose a strategy  
+- Check authentication  
+- Create a middleware to check if the user is authenticated to avoid all people who know the route to be there  
+- if authentication is ok, show the profile and other route  
+- get logout  
+- get 404 status  
+- catch if db error  
 
