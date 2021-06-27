@@ -7,6 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const { ObjectID } = require('mongodb');
 const LocalStrategy = require('passport-local');
+const bcrypt = require("bcrypt");
 
 const app = express();
 app.set("view engine", "pug");
@@ -25,6 +26,10 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// function hash pw  
+
+
 
 myDB(async client =>{
   const myDataBase = await client.db("database").collection('login');
@@ -56,19 +61,20 @@ myDB(async client =>{
       console.log("User "+username+" attempted to log in");
       if(err){return done(err)};
       if(!user){return done(null, false);}
-      if(password !== user.password){return done(null, false)}
+      if(!bcrypt.compareSync(password, user.password)){return done(null, false)}
       return done(null, user)
     })
   }))
 
   app.route('/register').post((req, res, next)=>{
+    const hash = bcrypt.hashSync(req.body.password, 12);
     myDataBase.findOne({username: req.body.username}, (err, user)=>{
       if(err){next(err);}
       else if(user){
         res.redirect('/');
       } else {
         myDataBase.insertOne({
-          username: req.body.username, password: req.body.password
+          username: req.body.username, password: hash
         }, (err, doc)=>{
           if(err){res.redirect('/')}
           else{
