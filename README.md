@@ -23,4 +23,7 @@ we can add Express-session to handle session (save cookie)
 - register new user with this logic : post form => check if user exist already => authenticate the new user => redirect to profile  
 - to user redirect, you need to create an app.get(path, (req, res)=>{res.render(pathfile, {optional variable})})  
 - install bcrypt to encrypt password in the database  
-
+  
+## OAunth  
+  
+with passport, it's possible to use third app auth like google, github and facebook to log on our site.

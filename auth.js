@@ -3,6 +3,7 @@ module.exports = (app, myDataBase)=>{
     const bcrypt = require("bcrypt");
     const { ObjectID } = require('mongodb');
     const LocalStrategy = require('passport-local');
+    const GithubStrategy = require("passport-github").Strategy;
 
     // Serialisation and deserealisation here... 
     passport.serializeUser((user,done)=>{
@@ -16,8 +17,8 @@ module.exports = (app, myDataBase)=>{
     })
 
     //Strategy 
-
-  passport.use(new LocalStrategy((username, password, done)=>{
+    /* Local Strategy */
+    passport.use(new LocalStrategy((username, password, done)=>{
     myDataBase.findOne({username: username}, (err, user)=>{
       console.log("User "+username+" attempted to log in");
       if(err){return done(err)};
@@ -25,5 +26,14 @@ module.exports = (app, myDataBase)=>{
       if(!bcrypt.compareSync(password, user.password)){return done(null, false)}
       return done(null, user)
     })
-  }))
+    }))
+
+    /* Github strategy */
+    passport.use(new GithubStrategy({
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: "https://fcc-advanced-node-antho.herokuapp.com/auth/github/callback"
+    }, (accessToken, refreshToken, profile, cb)=>{
+      console.log(profile);
+    }))
 }
