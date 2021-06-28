@@ -12,6 +12,11 @@ const passport = require("passport");
 const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
+const passportSocketIo = require("passport.socketio");
+const MongoStore = require("connect-mongo")(session);
+const cookieParser =  require("cookie-parser");
+const URI = process.env.MONGO_URI;
+const store = new MongoStore({url: URI});
 
 //setting
 
@@ -26,11 +31,36 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: true,
-  cookie: {secure:false}
+  cookie: {secure:false},
+  key: "express.sid",
+  store: store
 }))
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Connect passport socket io to be able to have req methode to know who is connected
+const onAuthorizeSuccess = (data, accept) =>{
+  console.log("successful connection to socket.io");
+  accept(null, true);
+}
+
+const onAuthorizeFail = (data, message, error, accept)=>{
+  if(error) throw new Error(message);
+  console.log("failed connection to socket.io: " , message);
+  accept(null, false);
+}
+
+io.use(
+  passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key: "express.sid",
+    secret: process.env.SESSION_SECRET,
+    store: store,
+    success: onAuthorizeSuccess,
+    fail: onAuthorizeFail
+  })
+)
 
 //Connect to db
 myDB(async client =>{
@@ -44,6 +74,8 @@ myDB(async client =>{
     ++currentUsers;
     console.log('A user has connected');
     io.emit("user count", currentUsers);
+    console.log("user" + socket.request.user.name + " connected");
+
     socket.on("disconnect", ()=>{
       --currentUsers;
       io.emit("user count", currentUsers);
