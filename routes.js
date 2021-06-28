@@ -44,7 +44,8 @@ module.exports = (app, myDataBase) =>{
   })
 
   app.route("/auth/github/callback").get(passport.authenticate("github", {faillureRedirect: "/"}), (req, res)=>{
-    res.redirect("/profile")
+    req.session.user_id = req.user.id
+    res.redirect("/chat")
   })
 
   /*---------------------- ----------- ---------------------------------------*/
@@ -72,6 +73,12 @@ module.exports = (app, myDataBase) =>{
   app.get("/logout", (req,res)=>{
     req.logout();
     res.redirect('/');
+  })
+
+  // chat route 
+
+  app.route('/chat').get(ensureAuthenticated, (req, res)=>{
+    res.render(process.cwd()+"/views/pug/chat", {user: req.user})
   })
 
   //404

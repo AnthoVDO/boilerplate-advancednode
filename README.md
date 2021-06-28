@@ -26,4 +26,6 @@ we can add Express-session to handle session (save cookie)
   
 ## OAunth  
   
-with passport, it's possible to use third app auth like google, github and facebook to log on our site.
+with passport, it's possible to use third app auth like google, github and facebook to log on our site.  
+use socket.io for real time even  
+with socket io, it's http.listen instead of app.listen

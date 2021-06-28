@@ -10,6 +10,8 @@ const routes = require("./routes");
 const auth = require("./auth");
 const passport = require("passport");
 const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 
 //setting
 
@@ -37,6 +39,10 @@ myDB(async client =>{
   routes(app, myDataBase);
   auth(app, myDataBase);
 
+  io.onconnection('connection', (socket)=>{
+    console.log('A user has connected');
+  })
+
 }).catch(e=>{
 
   app.route('/').get((req, res) => {
@@ -47,6 +53,6 @@ myDB(async client =>{
 
 //connect server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log('Listening on port ' + PORT);
 });
