@@ -39,9 +39,7 @@ module.exports = (app, myDataBase) =>{
 
   /*---------------------- Social auth ---------------------------------------*/
 
-  app.route("/auth/github").get(passport.authenticate("github"),(req, res)=>{
-
-  })
+  app.route("/auth/github").get(passport.authenticate("github"));
 
   app.route("/auth/github/callback").get(passport.authenticate("github", {faillureRedirect: "/"}), (req, res)=>{
     req.session.user_id = req.user.id

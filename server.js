@@ -39,8 +39,11 @@ myDB(async client =>{
   routes(app, myDataBase);
   auth(app, myDataBase);
 
-  io.onconnection('connection', (socket)=>{
+  let currentUsers = 0;
+  io.on('connection', (socket)=>{
+    ++currentUsers;
     console.log('A user has connected');
+    io.emit("user count", currentUsers);
   })
 
 }).catch(e=>{
