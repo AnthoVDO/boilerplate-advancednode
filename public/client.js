@@ -5,7 +5,7 @@ $(document).ready(function () {
   socket.on('user', (data)=>{
     $("#num-users").text(data.currentUsers+" users online");
     let message = data.name + (data.connected? "has joined the chat." : " has left the chat.");
-    $("#message").append($("<li>").html("<b>"+message+"</b>"));
+    $("#messages").append($("<li>").html("<b>"+message+"</b>"));
   })
 
   // Form submittion with new message in field with id 'm'
